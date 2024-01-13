@@ -1,7 +1,12 @@
 <template>
-    <h5 class="ps-4 mb-3">UserID： <span class="text-danger fw-bold">{{ id }}</span></h5>
-    <div class="ps-4">
-        {{ userInfo }}
+    <div>
+        <h5 class="ps-4 mb-3">UserID: <span class="text-danger fw-bold">{{ id }}</span></h5>
+        <div class="ps-4" v-if="userInfo">
+            {{ userInfo }}
+        </div>
+        <div class="ps-4" v-else>
+            {{ errorMsg }}
+        </div>
     </div>
 </template>
 
@@ -13,6 +18,7 @@ export default {
     data() {
         return {
             userInfo: {},
+            errorMsg: ''
         };
     },
     computed: {
@@ -27,8 +33,13 @@ export default {
     },
     methods: {
         async getUserInfo(id) {
-            const res = await axios.get(`https://jsonplaceholder.typicode.com/users/${id}`);
-            return res.data;
+            try {
+                const res = await axios.get(`https://jsonplaceholder.typicode.com/users/${id}`);
+                return res.data;
+            }
+            catch (err) {
+                this.errorMsg = '查無此資料!';
+            };
         },
     },
     async created() {

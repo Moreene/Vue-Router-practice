@@ -1,9 +1,12 @@
 <template>
     <h5 class="ps-4 mb-3">UserID： <span class="text-danger fw-bold">{{ userId }}</span></h5>
-    <div class="ps-4">
+    <div class="ps-4" v-if="userInfo">
         <p>Name：{{ userInfo.name }}</p>
         <p>Email：{{ userInfo.email }}</p>
         <p>Phone：{{ userInfo.phone }}</p>
+    </div>
+    <div class="ps-4" v-else>
+        {{ errorMsg }}
     </div>
 </template>
 
@@ -14,6 +17,7 @@ export default {
     data() {
         return {
             userInfo: {},
+            errorMsg: ''
         };
     },
     computed: {
@@ -32,8 +36,12 @@ export default {
     methods: {
         // 透過async/await取得api對應id的user資訊
         async getUserInfo(id) {
-            const res = await axios.get(`https://jsonplaceholder.typicode.com/users/${id}`);
-            return res.data;
+            try {
+                const res = await axios.get(`https://jsonplaceholder.typicode.com/users/${id}`);
+                return res.data;
+            } catch (error) {
+                this.errorMsg = '查無相關資料!'
+            };
         },
     },
     async created() {
@@ -41,6 +49,7 @@ export default {
         this.userInfo = await this.getUserInfo(this.userId);
     },
 };
+
 
 // 另一種寫法(沒有methods)
 // export default {
